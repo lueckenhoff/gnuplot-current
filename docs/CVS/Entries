@@ -1,0 +1,33 @@
+/.cvsignore/1.9/Sat Sep 29 09:41:48 2001//
+/Makefile.in/1.72/Sun Mar 30 18:17:36 2008//
+/README/1.6/Wed Oct 24 00:47:51 2007//
+/README.ja/1.4/Fri Jun 27 22:33:53 2008//
+/checkdoc.c/1.15/Tue Nov 13 17:56:15 2007//
+/doc2gih.c/1.16/Wed Oct 24 00:47:51 2007//
+/doc2hlp.c/1.17/Wed Oct 24 00:47:51 2007//
+/doc2ipf.c/1.21/Mon Feb 25 02:20:35 2008//
+/doc2ms.c/1.19/Wed Oct 24 00:47:51 2007//
+/doc2rnh.c/1.17/Wed Oct 24 00:47:51 2007//
+/doc2rtf.c/1.16/Wed Oct 24 00:47:51 2007//
+/doc2tex.c/1.22/Wed Oct 24 00:47:51 2007//
+/doc2texi.el/1.22/Wed May 21 19:32:57 2008//
+/doc2x.h/1.8/Tue Apr 13 17:23:31 2004//
+/faq-ja.tex/1.5/Sat Feb 23 19:18:36 2008//
+/gnuplot-ja.doc/1.22/Fri Jun 27 22:33:53 2008//
+/gnuplot.texi/1.118/Wed Jul 23 20:21:00 2008//
+/gpcard.tex/1.7/Sun Mar 30 03:27:53 2008//
+/makefile.ami/1.3/Sat Jan 22 16:40:27 2000//
+/makefile.dst/1.2/Sat Jan 22 16:40:27 2000//
+/plotstyles.gnu/1.5/Tue Jul 22 19:35:16 2008//
+/term-ja.diff/1.15/Fri Jun 27 22:34:02 2008//
+/termdoc.c/1.15/Thu Jul  1 17:10:03 2004//
+/titlepag.ipf/1.1/Sat May 13 09:05:39 2006//
+/titlepag.ms/1.8/Fri Jul  2 22:19:14 2004//
+/titlepag.tex/1.23/Sat Jun 14 04:47:43 2008//
+/toc_entr.sty/1.1.1.1/Wed Apr 15 19:16:45 1998//
+/xref.c/1.12/Mon Feb 25 02:20:35 2008//
+/xref.h/1.4/Tue Apr 13 17:23:36 2004//
+D/latextut////
+D/old////
+D/psdoc////
+/gnuplot.doc/1.530/Sun Aug 31 21:35:42 2008//
