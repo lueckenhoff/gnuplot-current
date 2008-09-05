@@ -285,6 +285,9 @@
 /* obsolete: use 'set term postscript level1 */
 /* #include "ai.trm" */
 
+/* HTML Canvas terminal */
+#include "canvas.trm"
+
 /* Computer Graphics Metafile (eg ms office) */
 #include "cgm.trm"
 
@@ -292,9 +295,9 @@
 #include "corel.trm"
 
 /* debugging terminal */
-#ifdef DEBUG
+//#ifdef DEBUG
 # include "debug.trm"
-#endif
+//#endif
 
 /* dumb terminal */
 #include "dumb.trm"

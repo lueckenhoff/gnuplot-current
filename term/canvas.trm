@@ -1,0 +1,404 @@
+/* Hello, Emacs, this is -*-C-*-
+ * $Id: canvas.trm,v 1.26 2006/07/29 05:40:41 sfeam Exp $
+ *
+ */
+
+/* GNUPLOT - canvas.trm */
+
+/*
+ * This file is included by ../term.c.
+ *
+ * This terminal driver supports:
+ *   W3C HTML <canvas> tag
+ *
+ * AUTHOR
+ *   Bruce Lueckenhoff, Aug 2008
+ *   Bruce_Lueckenhoff@yahoo.com
+ *
+ * send your comments or suggestions to (gnuplot-info@lists.sourceforge.net).
+ *
+ */
+#include "driver.h"
+
+#ifdef TERM_REGISTER
+register_term(canvas_driver)
+#endif
+
+#ifdef TERM_PROTO
+TERM_PUBLIC void CANVAS_options __PROTO((void));
+TERM_PUBLIC void CANVAS_init __PROTO((void));
+TERM_PUBLIC void CANVAS_graphics __PROTO((void));
+TERM_PUBLIC int CANVAS_justify_text __PROTO((enum JUSTIFY mode));
+TERM_PUBLIC void CANVAS_text __PROTO((void));
+TERM_PUBLIC void CANVAS_reset __PROTO((void));
+TERM_PUBLIC void CANVAS_linetype __PROTO((int linetype));
+TERM_PUBLIC void CANVAS_linewidth __PROTO((double linewidth));
+TERM_PUBLIC void CANVAS_move __PROTO((unsigned int x, unsigned int y));
+TERM_PUBLIC void CANVAS_vector __PROTO((unsigned int x, unsigned int y));
+TERM_PUBLIC void CANVAS_put_text __PROTO((unsigned int x, unsigned int y,
+					const char *str));
+TERM_PUBLIC int CANVAS_text_angle __PROTO((int ang));
+TERM_PUBLIC void CANVAS_filled_polygon __PROTO((int, gpiPoint *));
+
+#define CANVAS_XMAX 640 
+#define CANVAS_YMAX 480
+#define CANVASVCHAR		10
+#define CANVASHCHAR		8
+#define CANVASVTIC		10	
+#define CANVASHTIC		8
+
+#endif /* TERM_PROTO */
+
+#ifdef TERM_BODY
+
+#define CANVAS_AXIS_CONST '\1'
+#define CANVAS_BORDER_CONST '\2'
+
+static int canvas_x = -1;	/* current X position */
+static int canvas_y = -1;	/* current Y position */
+static int canvas_xmax = CANVAS_XMAX;
+static int canvas_ymax = CANVAS_YMAX;
+static int canvas_line_type = -3;
+static unsigned int canvas_font_size = CANVASVCHAR;
+static char canvas_justify[8] = "Center";
+static int canvas_text_angle = 0;
+static int canvas_in_a_path = FALSE;
+static int canvas_plot_count = 0;
+
+static struct gen_table CANVAS_opts[] =
+{
+    { NULL }
+};
+
+static void CANVAS_start (void)
+{
+    if (canvas_in_a_path) {
+	return;
+    }
+    canvas_in_a_path = TRUE;
+    fprintf(gpoutfile,
+"ctx.beginPath();\n"
+	   );
+}
+
+static void CANVAS_finish (void)
+{
+    if (!canvas_in_a_path) {
+	return;
+    }
+    fprintf(gpoutfile,
+"ctx.stroke();\n"
+"ctx.closePath();\n"
+	   );
+    canvas_in_a_path = FALSE;
+}
+
+TERM_PUBLIC void
+CANVAS_options()
+{
+    int x, y;
+    struct value a;
+
+    while (!END_OF_COMMAND) {
+	switch(lookup_table(&CANVAS_opts[0],c_token)) {
+	default:
+	    x = (int) real(const_express(&a));
+	    if (!END_OF_COMMAND) {
+		y = (int) real(const_express(&a));
+		canvas_xmax = term->xmax = x;
+		canvas_ymax = term->ymax = y;
+	    }
+ 	    break;
+	}
+    }
+
+    sprintf(term_options, "%d %d", canvas_xmax, canvas_ymax);
+}
+
+
+TERM_PUBLIC void
+CANVAS_init()
+{
+    canvas_plot_count = 0;
+    fprintf(gpoutfile,
+"<html>\n"
+"<head>\n"
+"<title>Gnuplot Canvas Graph</title>\n"
+"<!--[if IE]><script type=\"text/javascript\" src=\"excanvas.js\"></script><![endif]-->\n"
+"<script src=\"canvastext.js\"></script>\n"
+"<script type=\"text/javascript\">\n"
+);
+}
+
+
+TERM_PUBLIC void
+CANVAS_graphics()
+{
+    canvas_plot_count++;
+    fprintf(gpoutfile,
+"function gp_load%d() {\n"
+"  var canvas = document.getElementById(\"canvas%d\");\n"
+"  var ctx = canvas.getContext(\"2d\");\n"
+"  CanvasTextFunctions.enable(ctx);\n"
+"  ctx.lineWidth = \"1\";\n"
+"  ctx.strokeStyle = \"rgb(215,215,215)\";\n"
+            , canvas_plot_count
+            , canvas_plot_count
+	    );
+}
+
+
+TERM_PUBLIC void
+CANVAS_text()
+{
+    CANVAS_finish();
+    fprintf(gpoutfile, "}\n");
+}
+
+
+TERM_PUBLIC void
+CANVAS_reset()
+{
+    int		i;
+
+    fprintf(gpoutfile,
+"  function gp_load_all () {\n");
+    for (i = 1; i <= canvas_plot_count; i++) {
+	fprintf(gpoutfile, "    gp_load%d();\n", i);
+    }
+
+    fprintf(gpoutfile,
+"  }\n"
+"</script>\n"
+"<style>\n"
+"body {\n"
+"background-color:white;\n"
+"}\n"
+"canvas {\n"
+"border:0;\n"
+"background-color: white;\n"
+"}\n"
+"</style>\n"
+"</head>\n"
+"<body onload=\"gp_load_all();\">\n"
+           );
+
+    for (i = 1; i <= canvas_plot_count; i++) {
+	fprintf(gpoutfile,
+"<canvas id=\"canvas%d\" width=\"%d\" height=\"%d\"></canvas>\n"
+            , i , canvas_xmax, canvas_ymax);
+    }
+
+    fprintf(gpoutfile,
+"</body>\n"
+"</html>\n"
+	   );
+    fflush(gpoutfile);
+}
+
+
+TERM_PUBLIC void
+CANVAS_linetype(int linetype)
+{
+    static const char * pen_type[16] = {
+	"black",
+	"gray",
+	"red",
+	"green",
+	"blue",
+        "purple",
+	"cyan",
+	"rgb(21,117,69)", /* pine green*/
+	"rgb(0,0,148)", /* navy */
+	"rgb(255,153,0)", /* orange */
+	"rgb(0,153,161)", /* green blue*/
+	"rgb(214, 214, 69)", /* olive*/
+	"rgb(163, 145, 255)", /* cornflower*/
+	"rgb(255, 204, 0)", /* gold*/
+	"rgb(214, 0, 120)", /* mulberry*/
+	"rgb(171, 214, 0)", /* green yellow*/
+    };
+    if (linetype == canvas_line_type)
+	return;
+    CANVAS_finish();
+    canvas_line_type = linetype;
+    fprintf(gpoutfile, "ctx.strokeStyle = \"%s\";\n",
+            pen_type[(linetype + 2) % 14]);
+
+}
+
+
+TERM_PUBLIC void
+CANVAS_move(unsigned int arg_x, unsigned int arg_y)
+{
+    if ((canvas_x == arg_x) && (canvas_y == arg_y)) {
+        return;
+    }
+    CANVAS_start();
+    fprintf(gpoutfile,
+"ctx.moveTo(%u,%u);\n"
+            , arg_x, canvas_ymax - arg_y);
+    canvas_x = arg_x;
+    canvas_y = arg_y;
+}
+
+TERM_PUBLIC void
+CANVAS_vector(unsigned int arg_x, unsigned int arg_y)
+{
+    if ((canvas_x == arg_x) && (canvas_y == arg_y)) {
+        return;
+    }
+    CANVAS_start();
+    fprintf(gpoutfile,
+"ctx.lineTo(%u,%u);\n"
+            , arg_x, canvas_ymax - arg_y
+           );
+    canvas_x = arg_x;
+    canvas_y = arg_y;
+}
+
+
+TERM_PUBLIC int
+CANVAS_justify_text(enum JUSTIFY mode)
+{
+    switch (mode) {
+    case (CENTRE):
+        snprintf(canvas_justify, sizeof(canvas_justify), "Center");
+	break;
+    case (RIGHT):
+        snprintf(canvas_justify, sizeof(canvas_justify), "Right");
+	break;
+    default:
+    case (LEFT):
+        canvas_justify[0] = '\0';
+	break;
+    }
+    return (TRUE);
+}
+
+TERM_PUBLIC int
+CANVAS_text_angle(int ang)
+{
+    canvas_text_angle = -1 * ang;
+    return TRUE;
+}
+
+
+TERM_PUBLIC void
+CANVAS_put_text(unsigned int x, unsigned int y, const char *str)
+{
+    CANVAS_finish();
+    if (0 != canvas_text_angle) {
+	fprintf(gpoutfile,
+"ctx.save();\n"
+"ctx.translate(%u, %u);\n"
+"ctx.rotate(%d * Math.PI / 180);\n"
+                , x, canvas_ymax - y
+                , canvas_text_angle
+               );
+        x = 0;
+        y = canvas_ymax;
+    }
+    fprintf(gpoutfile,
+"ctx.drawText%s(\"sans\",%u,%u,%u,\"%s\");\n",
+            canvas_justify,
+            canvas_font_size,
+            x,
+            (unsigned int) canvas_ymax + 5 - y,
+            str);
+    if (0 != canvas_text_angle) {
+	fprintf(gpoutfile,
+"ctx.restore();\n"
+               );
+
+    }
+}
+
+
+TERM_PUBLIC void
+CANVAS_linewidth(double linewidth)
+{
+    CANVAS_finish();
+    fprintf(gpoutfile, "ctx.lineWidth = \"%g\";\n", linewidth);
+}
+
+TERM_PUBLIC void
+CANVAS_set_color(t_colorspec *colorspec)
+{
+    ;
+}
+
+TERM_PUBLIC void
+CANVAS_filled_polygon(int points, gpiPoint *corners)
+{
+    int		i;
+
+    CANVAS_finish();
+    fprintf(gpoutfile,
+"ctx.fillStyle = \"rgb(0,0,200)\";\n"
+"ctx.beginPath();\n"
+"ctx.moveTo(%d, %d);\n"
+            , corners[0].x, canvas_ymax - corners[0].y);
+
+    for (i = 1; i < points; i++) {
+	fprintf(gpoutfile,
+"ctx.lineTo(%d, %d);\n"
+                , corners[i].x, canvas_ymax - corners[i].y);
+    }
+	fprintf(gpoutfile,
+"ctx.closePath();\n"
+"ctx.fill();\n"
+               );
+
+}
+
+
+#endif /* TERM_BODY */
+
+#ifdef TERM_TABLE
+TERM_TABLE_START(canvas_driver)
+    "canvas", "HTML Canvas object",
+    CANVAS_XMAX, CANVAS_YMAX, CANVASVCHAR, CANVASHCHAR,
+    CANVASVTIC, CANVASHTIC, CANVAS_options, CANVAS_init, CANVAS_reset,
+    CANVAS_text, null_scale, CANVAS_graphics, CANVAS_move, CANVAS_vector,
+    CANVAS_linetype, CANVAS_put_text, CANVAS_text_angle,
+    CANVAS_justify_text, do_point, do_arrow, set_font_null,
+    0,				/* pointsize */
+    TERM_CAN_MULTIPLOT,
+    NULL, NULL, NULL, CANVAS_linewidth
+#ifdef USE_MOUSE
+    , NULL, NULL, NULL, NULL, NULL
+#endif
+    , NULL, NULL, NULL, CANVAS_filled_polygon
+#ifdef WITH_IMAGE
+    , NULL
+#endif
+TERM_TABLE_END(canvas_driver)
+
+#undef LAST_TERM
+#define LAST_TERM canvas_driver
+
+#endif /* TERM_TABLE */
+
+#ifdef TERM_HELP
+START_HELP(canvas)
+"1 canvas",
+"?commands set terminal canvas",
+"?set terminal canvas",
+"?set term canvas",
+"?terminal canvas",
+"?term canvas",
+"?canvas",
+" The `canvas` terminal driver has an optional size specification.",
+"",
+" Syntax:",
+"       set terminal canvas {<xsize> <ysize>}",
+"",
+" where <xsize> and <ysize> set the size of the canvas terminals. Default is",
+" 400 by 300.",
+"",
+" Examples:",
+"       set term canvas",
+"       set term canvas 640 480 # VGA screen"
+END_HELP(canvas)
+#endif /* TERM_HELP */
