@@ -28,7 +28,6 @@
 /datafile.h/1.30/Fri Jul 25 05:47:39 2008//
 /dynarray.c/1.11/Thu Jul  1 17:10:04 2004//
 /dynarray.h/1.7/Tue Apr 13 17:23:53 2004//
-/eval.c/1.70/Tue Aug  5 23:27:00 2008//
 /eval.h/1.32/Mon Jul 21 20:19:25 2008//
 /fit.c/1.63/Wed Jun 18 23:14:08 2008//
 /fit.h/1.12/Tue Apr 13 17:23:53 2004//
@@ -112,13 +111,11 @@
 /term.h/1.40/Sat May 31 21:38:13 2008//
 /term_api.h/1.74/Wed Jul  9 16:39:50 2008//
 /time.c/1.20/Fri Mar 30 05:18:46 2007//
-/util.c/1.81/Mon Jul 21 20:19:25 2008//
 /util.h/1.31/Tue Mar 18 00:16:33 2008//
 /util3d.c/1.35/Tue Jul  8 04:56:45 2008//
 /util3d.h/1.15/Tue Jul  8 04:56:45 2008//
 /variable.c/1.34/Wed Jun  4 02:38:11 2008//
 /variable.h/1.17/Tue Mar 18 00:16:33 2008//
-/version.c/1.82/Fri Aug  8 19:45:14 2008//
 /version.h/1.5/Sat Aug  5 21:33:15 2006//
 /vms.c/1.5/Thu Jul  1 17:10:09 2004//
 /x11.opt/1.1/Wed Jun 30 12:04:21 1999//
@@ -128,10 +125,13 @@ D/beos////
 D/os2////
 D/win////
 D/wxterminal////
-/axis.c/1.72/Sun Aug 31 21:35:43 2008//
 /axis.h/1.53/Sun Aug 31 21:35:43 2008//
 /graphics.c/1.279/Sun Aug 31 21:35:43 2008//
 /save.c/1.162/Sun Aug 31 21:35:43 2008//
 /set.c/1.282/Sun Aug 31 21:35:43 2008//
 /show.c/1.219/Sun Aug 31 21:35:43 2008//
 /unset.c/1.122/Sun Aug 31 21:35:43 2008//
+/axis.c/1.73/Fri Sep  5 01:55:51 2008//
+/eval.c/1.71/Fri Sep  5 01:55:52 2008//
+/util.c/1.82/Fri Sep  5 01:55:52 2008//
+/version.c/1.83/Fri Sep  5 01:55:52 2008//
