@@ -7,7 +7,6 @@
 /apollo.trm/1.14/Fri Jul 21 02:35:45 2006//
 /aquaterm.trm/1.39/Thu Jun 19 17:49:09 2008//
 /be.trm/1.18/Fri Jul 21 02:35:45 2006//
-/cairo.trm/1.22/Tue Jul 29 22:15:50 2008//
 /cgi.trm/1.14/Fri Jul 21 02:35:45 2006//
 /cgm.trm/1.89/Mon Mar  3 21:38:18 2008//
 /corel.trm/1.17/Fri Jul 21 02:35:45 2006//
@@ -18,7 +17,6 @@
 /dxf.trm/1.16/Fri Jul 21 02:35:45 2006//
 /dxy.trm/1.14/Fri Jul 21 02:35:45 2006//
 /eepic.trm/1.30/Sun Feb 24 19:49:38 2008//
-/emf.trm/1.53/Wed Aug  6 22:05:29 2008//
 /emxvga.trm/1.15/Fri Jul 21 02:35:46 2006//
 /epson.trm/1.25/Sat May 31 20:23:44 2008//
 /estimate.trm/1.7/Mon Jun  2 19:49:50 2008//
@@ -74,8 +72,10 @@
 /v384.trm/1.12/Fri Jul 21 02:35:48 2006//
 /vgagl.trm/1.20/Fri Jul 21 02:35:48 2006//
 /vws.trm/1.19/Tue Oct 16 21:19:45 2007//
-/win.trm/1.62/Wed Jun 18 23:14:10 2008//
 /wxt.trm/1.23/Mon Jun  2 00:48:12 2008//
 /x11.trm/1.175/Mon Jun  2 00:48:12 2008//
 /xlib.trm/1.21/Thu Dec 20 03:15:55 2007//
 D/PostScript////
+/cairo.trm/1.25/Sun Sep 21 20:22:16 2008//
+/emf.trm/1.56/Sun Sep 21 20:22:16 2008//
+/win.trm/1.63/Sun Sep 21 20:22:16 2008//

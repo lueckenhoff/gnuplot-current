@@ -1,5 +1,5 @@
 #ifndef lint
-static char *RCSid() { return RCSid("$Id: set.c,v 1.282 2008/08/19 18:48:21 sfeam Exp $"); }
+static char *RCSid() { return RCSid("$Id: set.c,v 1.287 2008/09/09 06:05:05 sfeam Exp $"); }
 #endif
 
 /* GNUPLOT - set.c */
@@ -242,6 +242,11 @@ set_command()
     } else {
 
 #endif /* BACKWARDS_COMPATIBLE */
+
+	int save_token;
+	check_for_iteration();
+	save_token = c_token;
+	ITERATE:
 
 	switch(lookup_table(&set_tbl[0],c_token)) {
 	case S_ANGLES:
@@ -624,8 +629,15 @@ set_command()
 	    break;
 	}
 
+    	if (next_iteration()) {
+	    c_token = save_token;
+	    goto ITERATE;
+	}
+
     }
-    update_gpval_variables(0); /* update GPVAL_ inner variables */
+
+    /* FIXME - Should this be inside the iteration loop? */
+    update_gpval_variables(0);
 
 }
 
@@ -4303,6 +4315,14 @@ set_view()
 	splot_map = FALSE; /* default is no map */
     }
 
+    if (almost_equals(c_token,"equal$_axes")) {
+	aspect_ratio_3D = 1.0;
+	c_token++;
+    } else if (almost_equals(c_token,"noequal$_axes")) {
+	aspect_ratio_3D = 0.0;
+	c_token++;
+    }
+
     local_vals[0] = surface_rot_x;
     local_vals[1] = surface_rot_z;
     local_vals[2] = surface_scale;
@@ -4882,7 +4902,7 @@ load_tic_user(AXIS_INDEX axis)
     double ticposition;
 
     /* Free any old tic labels */
-    if (!axis_array[axis].ticdef.def.mix) {
+    if (!axis_array[axis].ticdef.def.mix && !iteration) {
 	free_marklist(axis_array[axis].ticdef.def.user);
 	axis_array[axis].ticdef.def.user = NULL;
     }

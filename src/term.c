@@ -1,5 +1,5 @@
 #ifndef lint
-static char *RCSid() { return RCSid("$Id: term.c,v 1.178 2008/07/09 16:39:50 mikulik Exp $"); }
+static char *RCSid() { return RCSid("$Id: term.c,v 1.180 2008/09/16 05:35:25 sfeam Exp $"); }
 #endif
 
 /* GNUPLOT - term.c */
@@ -995,9 +995,9 @@ write_multiline(
 		    (*t->put_text) (x - fix, y, text);
 	    }
 	}
-	if (angle == TEXT_VERTICAL)
+	if (angle == 90 || angle == TEXT_VERTICAL)
 	    x += t->v_char;
-	else if (-angle == TEXT_VERTICAL)
+	else if (angle == -90 || angle == -TEXT_VERTICAL)
 	    x -= t->v_char;
 	else
 	    y -= t->v_char;
@@ -2659,9 +2659,9 @@ enhanced_recursion(
 		/* need a separate flag for shift-JIS and certain other 8-bit */
 		/* character sets.                                            */
 		/* EAM Nov 2004 - Nevertheless we must allow \ to act as an   */
-		/* escape for the 5 enhanced mode formatting characters even  */
+		/* escape for a few enhanced mode formatting characters even  */
 		/* though it corrupts certain Shift-JIS character sequences.  */
-		if (strchr("^_@&~",p[1]) == NULL) {
+		if (strchr("^_@&~{}",p[1]) == NULL) {
 		    (term->enhanced_open)(fontname, fontsize, base, widthflag, showflag, overprint);
 		    (term->enhanced_writec)('\\');
 		    (term->enhanced_writec)('\\');

@@ -14,7 +14,6 @@
 /wgnuplot.hpj/1.2/Tue Apr 25 15:41:17 2006//
 /wgnuplot.mnu/1.4/Thu Aug  4 16:44:58 2005//
 /wgnuplot.rc/1.2/Sat Apr 29 05:30:07 2006//
-/wgraph.c/1.62/Tue Jun 24 21:16:00 2008//
 /winmain.c/1.24/Sat May 17 15:37:27 2008//
 /winmain.h/1.6/Sun Jul 16 02:50:56 2006//
 /wmenu.c/1.8/Wed Aug  9 07:39:34 2006//
@@ -23,4 +22,5 @@
 /wresourc.h/1.6/Thu Jul  1 17:10:11 2004//
 /wtext.c/1.18/Mon Jun  2 16:07:00 2008//
 /wtext.h/1.9/Thu Jul  1 17:10:11 2004//
+/wgraph.c/1.64/Sun Sep 21 20:22:16 2008//
 D

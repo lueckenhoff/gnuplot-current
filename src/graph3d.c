@@ -1,5 +1,5 @@
 #ifndef lint
-static char *RCSid() { return RCSid("$Id: graph3d.c,v 1.205 2008/08/16 05:38:36 sfeam Exp $"); }
+static char *RCSid() { return RCSid("$Id: graph3d.c,v 1.208 2008/09/10 15:58:31 sfeam Exp $"); }
 #endif
 
 /* GNUPLOT - graph3d.c */
@@ -525,6 +525,9 @@ place_labels3d(struct text_label *listhead, int layer)
 		     this_label->place.z, &xx, &yy);
 	    x = xx;
 	    y = yy;
+	    /* Only clip in 2D.   EAM - why? */
+	    if (splot_map && clip_point(x, y))
+		continue;
 	} else
 	    map3d_position(&this_label->place, &x, &y, "label");
 
@@ -658,6 +661,12 @@ do_3dplot(
     zscale3d = 2.0 / (ceiling_z - floor_z) * surface_zscale;
     yscale3d = 2.0 / (Y_AXIS.max - Y_AXIS.min);
     xscale3d = 2.0 / (X_AXIS.max - X_AXIS.min);
+
+    /* Allow 'set view equal_axes' to shrink rendered length of either X or Y axis */
+    if (aspect_ratio_3D == 1.0) {
+	xscale3d = GPMIN(xscale3d,yscale3d);
+	yscale3d = xscale3d;
+    }
 
     /* Initialize palette */
     if (!quick) {

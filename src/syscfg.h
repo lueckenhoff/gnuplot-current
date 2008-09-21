@@ -1,5 +1,5 @@
 /*
- * $Id: syscfg.h,v 1.34 2008/03/30 03:27:55 sfeam Exp $
+ * $Id: syscfg.h,v 1.36 2008/09/10 18:12:34 sfeam Exp $
  */
 
 /* GNUPLOT - syscfg.h */
